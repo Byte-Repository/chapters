@@ -1,0 +1,6 @@
+{% for recipe in latest_recipes %}
+    <div class="recipe">
+        <h4><a href="{{ recipe.get_absolute_url }}">{{ recipe.title }}</a></h4>
+        <p>{{ recipe.publish }}</p>
+    </div>
+{% endfor %}

@@ -22,4 +22,11 @@ urlpatterns = [
     ),
     path('feed/', LatestPostsFeed(), name='post_feed'),
     path('search/', views.post_search, name='post_search'),
+
+
+    # Recipe URLs
+    path('recipes/', views.recipe_list, name='recipe_list'),
+    path('recipes/tag/<slug:tag_slug>/', views.recipe_list, name='recipe_list_by_tag'),
+    path('recipes/<int:year>/<int:month>/<int:day>/<slug:recipe>/', views.recipe_detail, name='recipe_detail'),
+    path('recipes/<int:recipe_id>/rate/', views.submit_rating, name='submit_rating'),  # Optional for rating
 ]

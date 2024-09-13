@@ -1,0 +1,44 @@
+{% extends "blog/recipe_base.html" %}
+{% load recipe_tags %}
+
+{% block title %}{{ recipe.title }}{% endblock %}
+
+{% block content %}
+    <h1>{{ recipe.title }}</h1>
+        <p class="date">
+            Published {{ recipe.publish }} by {{ recipe.author }}
+        </p>
+        {{ recipe.body|markdown }}
+        <p>
+    <a href="{% url "blog:recipe_share" recipe.id %}">
+        Share this recipe
+    </a>
+</p>
+
+<h2>Similar recipes</h2>
+{% for recipe in similar_recipes %}
+    <p>
+        <a href="{{ recipe.get_absolute_url }}">{{ recipe.title }}</a>
+    </p>
+{% empty %}
+There are no similar recipes yet.
+{% endfor %}
+
+{% with comments.count as total_comments %}
+<h2>
+{{ total_comments }} comment{{ total_comments|pluralize }}
+</h2>
+{% endwith %}
+{% for comment in comments %}
+<div class="comment">
+<p class="info">
+Comment {{ forloop.counter }} by {{ comment.name }}
+{{ comment.created }}
+</p>
+{{ comment.body|linebreaks }}
+</div>
+{% empty %}
+<p>There are no comments.</p>
+{% endfor %}
+{% include "blog/recipe/includes/comment_form.html" %}
+{% endblock %}

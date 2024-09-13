@@ -2,13 +2,13 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.core.mail import send_mail
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db.models import Count
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView
 from taggit.models import Tag
 
-from .forms import CommentForm, EmailPostForm, SearchForm
-from .models import Post
+from .forms import CommentForm, EmailPostForm, SearchForm, RatingForm
+from .models import Post, Recipe, Rating
 
 def post_list(request, tag_slug=None):
     post_list = Post.published.all()
@@ -178,3 +178,80 @@ def post_search(request):
             'results': results
         },
     )
+
+def recipe_list(request, tag_slug=None):
+    recipe_list = Recipe.published.all()
+    tag = None
+    if tag_slug:
+        tag = get_object_or_404(Tag, slug=tag_slug)
+        recipe_list = recipe_list.filter(tags__in=[tag])
+    
+    # Pagination with 3 recipes per page
+    paginator = Paginator(recipe_list, 3)
+    page_number = request.GET.get('page', 1)
+    try:
+        recipes = paginator.page(page_number)
+    except PageNotAnInteger:
+        recipes = paginator.page(1)
+    except EmptyPage:
+        recipes = paginator.page(paginator.num_pages)
+
+    return render(
+        request,
+        'blog/recipe/list.html',
+        {'recipes': recipes, 'tag': tag}
+    )
+
+def recipe_detail(request, year, month, day, recipe):
+    recipe = get_object_or_404(
+        Recipe,
+        status=Recipe.Status.PUBLISHED,
+        slug=recipe,
+        publish__year=year,
+        publish__month=month,
+        publish__day=day
+    )
+    
+    # List of active comments for this recipe
+    comments = recipe.comments.filter(active=True)
+    form = CommentForm()
+
+    # Similar recipes based on tags
+    recipe_tags_ids = recipe.tags.values_list('id', flat=True)
+    similar_recipes = Recipe.published.filter(tags__in=recipe_tags_ids).exclude(id=recipe.id)
+    similar_recipes = similar_recipes.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')[:4]
+
+    return render(
+        request,
+        'blog/recipe/detail.html',
+        {
+            'recipe': recipe,
+            'comments': comments,
+            'form': form,
+            'similar_recipes': similar_recipes
+        }
+    )
+
+@require_POST
+def submit_rating(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    form = RatingForm(request.POST)
+    
+    if form.is_valid():
+        score = form.cleaned_data['score']
+        comment = form.cleaned_data['comment']
+        
+        # Create and save the rating object (assuming a Rating model exists)
+        Rating.objects.create(
+            recipe=recipe,
+            user=request.user,  # Assuming you're using a logged-in user
+            score=score,
+            comment=comment
+        )
+        return redirect(recipe.get_absolute_url())
+    
+    return render(request, 'blog/recipe_detail.html', {
+        'recipe': recipe,
+        'rating_form': form,
+        'comment_form': CommentForm(),  # Load an empty comment form as well
+    })
