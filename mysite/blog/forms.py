@@ -1,5 +1,5 @@
 from django import forms
-from .models import Comment
+from .models import Comment, Recipe, Rating
 
 class EmailPostForm(forms.Form):
     name = forms.CharField(max_length=25)
@@ -7,7 +7,7 @@ class EmailPostForm(forms.Form):
     to = forms.EmailField()
     comments = forms.CharField(
         required=False,
-        widget=forms.Textarea
+        widget=forms.Textarea(attrs={'rows': 3}),
     )
 
 class CommentForm(forms.ModelForm):
@@ -15,18 +15,25 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['name', 'email', 'body']
 
+class RecipeCommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['name', 'email', 'body']
+        widgets = {
+            'body': forms.Textarea(attrs={'rows': 3}),
+        }
+
 class SearchForm(forms.Form):
     query = forms.CharField()
 
 class RatingForm(forms.Form):
-    score = forms.IntegerField(
-        min_value=1, 
-        max_value=5,
-        widget=forms.NumberInput(attrs={'class': 'form-control'}),
+    score = forms.ChoiceField(
+        choices=[(i, i) for i in range(1, 6)],
+        widget=forms.RadioSelect(attrs={'class': 'rating'}),
         help_text="Rate this recipe from 1 to 5"
     )
     comment = forms.CharField(
         required=False,
-        widget=forms.Textarea(attrs={'class': 'form-control'}),
+        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         help_text="Optional: Leave a comment with your rating"
     )

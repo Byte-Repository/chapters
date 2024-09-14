@@ -1,14 +1,14 @@
 from django.contrib.postgres.search import TrigramSimilarity
 from django.core.mail import send_mail
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.db.models import Count
+from django.db.models import Count, Avg
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
 from django.views.generic import ListView
 from taggit.models import Tag
 
-from .forms import CommentForm, EmailPostForm, SearchForm, RatingForm
-from .models import Post, Recipe, Rating
+from .forms import CommentForm, EmailPostForm, SearchForm, RatingForm, RecipeCommentForm
+from .models import Post, Recipe, Rating, RecipeComment
 
 def post_list(request, tag_slug=None):
     post_list = Post.published.all()
@@ -221,6 +221,9 @@ def recipe_detail(request, year, month, day, recipe):
     similar_recipes = Recipe.published.filter(tags__in=recipe_tags_ids).exclude(id=recipe.id)
     similar_recipes = similar_recipes.annotate(same_tags=Count('tags')).order_by('-same_tags', '-publish')[:4]
 
+    # Calculate average rating
+    average_rating = recipe.ratings.aggregate(average=Avg('score'))['average']
+
     return render(
         request,
         'blog/recipe/detail.html',
@@ -228,7 +231,30 @@ def recipe_detail(request, year, month, day, recipe):
             'recipe': recipe,
             'comments': comments,
             'form': form,
-            'similar_recipes': similar_recipes
+            'similar_recipes': similar_recipes,
+            'average_rating': average_rating,
+        }
+    )
+
+@require_POST
+def recipe_comment(request, recipe_id):
+    recipe = get_object_or_404(
+        Recipe,
+        id=recipe_id,
+        status=Recipe.Status.PUBLISHED
+    )
+    form = CommentForm(data=request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.recipe = recipe
+        comment.save()
+        return redirect(recipe.get_absolute_url())  # Redirect after comment submission
+    return render(
+        request,
+        'blog/recipe/comment.html',
+        {
+            'recipe': recipe,
+            'form': form,
         }
     )
 
@@ -241,16 +267,97 @@ def submit_rating(request, recipe_id):
         score = form.cleaned_data['score']
         comment = form.cleaned_data['comment']
         
-        # Create and save the rating object (assuming a Rating model exists)
-        Rating.objects.create(
+        # Update or create the rating to avoid duplicate ratings by the same user
+        Rating.objects.update_or_create(
             recipe=recipe,
             user=request.user,  # Assuming you're using a logged-in user
-            score=score,
-            comment=comment
+            defaults={'score': score, 'comment': comment}
         )
         return redirect(recipe.get_absolute_url())
     
-    return render(request, 'blog/recipe_detail.html', {
+    return render(request, 'blog/recipe/detail.html', {
+        'recipe': recipe,
+        'rating_form': form,
+        'comment_form': CommentForm(),  # Load an empty comment form as well
+    })
+
+def recipe_share(request, recipe_id):
+    # Retrieve recipe by id
+    recipe = get_object_or_404(
+        Recipe,
+        id=recipe_id,
+        status=Recipe.Status.PUBLISHED
+    )
+    sent = False
+
+    if request.method == 'POST':
+        # Form was submitted
+        form = EmailPostForm(request.POST)  # You can reuse the same form for recipes
+        if form.is_valid():
+            # Form fields passed validation
+            cd = form.cleaned_data
+            recipe_url = request.build_absolute_uri(
+                recipe.get_absolute_url()
+            )
+            subject = (
+                f"{cd['name']} ({cd['email']}) "
+                f"recommends you try the recipe {recipe.title}"
+            )
+            message = (
+                f"Try the recipe {recipe.title} at {recipe_url}\n\n"
+                f"{cd['name']}\'s comments: {cd['comments']}"
+            )
+            send_mail(
+                subject=subject,
+                message=message,
+                from_email=None,
+                recipient_list=[cd['to']]
+            )
+            sent = True
+    else:
+        form = EmailPostForm()
+
+    return render(
+        request,
+        'blog/recipe/share.html',  # Create this template similarly to 'post/share.html'
+        {
+            'recipe': recipe,
+            'form': form,
+            'sent': sent
+        }
+    )
+
+
+@require_POST
+def submit_rating(request, recipe_id):
+    recipe = get_object_or_404(Recipe, id=recipe_id)
+    form = RatingForm(request.POST)
+    
+    if form.is_valid():
+        score = form.cleaned_data['score']
+        comment = form.cleaned_data['comment']
+        
+        # Check if the user has already rated this recipe
+        rating, created = Rating.objects.update_or_create(
+            recipe=recipe,
+            user=request.user,  # Assuming you're using a logged-in user
+            defaults={'score': score, 'comment': comment}
+        )
+        
+        if created:
+            # Rating was created
+            message = "Thank you for your rating!"
+        else:
+            # Rating was updated
+            message = "Your rating has been updated!"
+
+        # Optionally, add a success message to be displayed on the recipe detail page
+        # Add `message` to the context if you want to display it
+        
+        return redirect(recipe.get_absolute_url())
+    
+    # If the form is not valid, you might want to handle the error appropriately
+    return render(request, 'blog/recipe/rating.html', {
         'recipe': recipe,
         'rating_form': form,
         'comment_form': CommentForm(),  # Load an empty comment form as well

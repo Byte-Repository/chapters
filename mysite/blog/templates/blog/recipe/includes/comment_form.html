@@ -1,5 +1,5 @@
 <h2>Add a new comment</h2>
-<form action="{% url "blog:post_comment" recipe.id %}" method="recipe">
+<form action="{% url "blog:recipe_comment" recipe.id %}" method="recipe">
 <div class="left">
     {{ form.name.as_field_group }}
     </div>

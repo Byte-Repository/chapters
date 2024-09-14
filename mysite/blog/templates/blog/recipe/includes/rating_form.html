@@ -1,0 +1,61 @@
+<h2 class="rating-header">Rate this Recipe</h2>
+
+<form action="{% url "blog:submit_rating" recipe.id %}" method="post" class="rating-form">
+    {% csrf_token %}
+
+    <div class="form-group">
+        <label for="id_score">Rating:</label>
+        <div class="rating-stars">
+            {% for i in "12345" %}
+                <label>
+                    <input type="radio" name="score" value="{{ i }}" class="star-input" required>
+                    <span class="fa fa-star"></span>
+                </label>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="form-group">
+        {{ form.comment.label_tag }} 
+        {{ form.comment }}
+    </div>
+
+    <p><input type="submit" value="Add Rating"></p>
+<br>
+</form>
+
+
+<style>
+    .rating-header {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+    .rating-form {
+        margin-top: 20px;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    .rating-stars {
+        display: flex;
+        gap: 5px;
+    }
+    .rating-stars .fa-star {
+        font-size: 1.5em;
+        color: #ccc;
+        cursor: pointer;
+    }
+    .star-input:checked + .fa-star {
+        color: gold;
+    }
+    .btn {
+        background-color: #007bff;
+        color: white;
+        padding: 8px 12px;
+        border: none;
+        cursor: pointer;
+    }
+    .btn:hover {
+        background-color: #0056b3;
+    }
+</style>

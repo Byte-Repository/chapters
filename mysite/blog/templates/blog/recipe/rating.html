@@ -1,0 +1,10 @@
+{% extends "blog/recipe_base.html" %}
+{% block title %}Add a rating{% endblock %}
+{% block content %}
+{% if rating %}
+<h2>Your rating has been added.</h2>
+<p><a href="{{ recipe.get_absolute_url }}">Back to the recipe</a></p>
+{% else %}
+{% include "blog/recipe/includes/rating_form.html" %}
+{% endif %}
+{% endblock %}
