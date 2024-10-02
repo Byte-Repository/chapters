@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
+    'easy_thumbnails',
     'social_django',
     'images.apps.ImagesConfig'
 ]
@@ -119,7 +120,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -132,7 +133,7 @@ LOGOUT_URL = 'logout'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 AUTHENTICATION_BACKENDS = [ 
@@ -157,7 +158,7 @@ SOCIAL_AUTH_PIPELINE = [
 'social_core.pipeline.user.user_details',
 ]
 
-if DEBUG:
-    import mimetypes
-    mimetypes.add_type('application/javascript', '.js', True)
-    mimetypes.add_type('text/css', '.css', True)
+# if DEBUG:
+#     import mimetypes
+#     mimetypes.add_type('application/javascript', '.js', True)
+#     mimetypes.add_type('text/css', '.css', True)
