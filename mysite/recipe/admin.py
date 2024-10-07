@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Comment, Post
+from .models import Comment, Post, Rating
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -18,20 +18,8 @@ class CommentAdmin(admin.ModelAdmin):
     list_filter = ['active', 'created', 'updated']
     search_fields = ['name', 'email', 'body']    
 
-# @admin.register(Rating)
-# class RatingAdmin(admin.ModelAdmin):
-#     list_display = ['recipe', 'user', 'score', 'created']
-#     list_filter = ['score', 'created']
-#     search_fields = ['user__username', 'recipe__title', 'comment']
-#     raw_id_fields = ['user', 'recipe']
-#     ordering = ['-created']
-
-# @admin.register(Recipe)
-# class RecipeAdmin(admin.ModelAdmin):
-#     list_display = ['title', 'slug', 'author', 'publish', 'status']
-#     list_filter = ['status', 'created', 'publish', 'author']
-#     search_fields = ['title', 'ingredients', 'instructions']
-#     prepopulated_fields = {'slug': ('title',)}
-#     raw_id_fields = ['author']
-#     date_hierarchy = 'publish'
-#     ordering = ['status', 'publish']
+@admin.register(Rating)  # Register the Rating model
+class RatingAdmin(admin.ModelAdmin):
+    list_display = ['post', 'score', 'created']  # Adjust as needed
+    list_filter = ['post', 'score', 'created']  # Adjust as needed
+    search_fields = ['post__title']  # Searching by post title

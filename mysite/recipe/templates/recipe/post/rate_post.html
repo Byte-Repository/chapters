@@ -1,0 +1,11 @@
+<h3>Rate this Recipe</h3>
+<form method="post" action="{% url 'recipe:rate_post' post.id %}">
+    {% csrf_token %}
+    <div class="rating-input">
+        {{ form.score }}  <!-- Render only the rating field -->
+    </div>
+    <button type="submit">Rate</button>
+</form>
+
+<h3>Average Rating:</h3>
+<p>{{ average_rating|default:"No ratings yet" }}</p>
