@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'taggit',
     'blog.apps.BlogConfig',
+    'recipe.apps.RecipeConfig'
+    
 ]
 
 MIDDLEWARE = [

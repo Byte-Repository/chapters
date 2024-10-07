@@ -18,14 +18,18 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path
 from blog.sitemaps import PostSitemap
+from recipe.sitemaps import PostSitemap
 
 sitemaps = {
-    'posts': PostSitemap,
+    'blog_posts': PostSitemap,
+    'recipe_posts': PostSitemap,
+    
 }
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/', include('blog.urls', namespace='blog')),
+    path('recipe/', include('recipe.urls', namespace='recipe')),
     path(
         'sitemap.xml',
         sitemap,
