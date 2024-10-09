@@ -29,22 +29,29 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['mysite.com', 'localhost', '127.0.0.1']
 
+SITE_ID = 1
+
 # Application definition
 
 INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'django.contrib.admin',
+    'django.contrib.sitemaps',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.sites',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'debug_toolbar',
     'django_extensions',
     'easy_thumbnails',
     'social_django',
+    'taggit',
     'actions.apps.ActionsConfig',
-    'images.apps.ImagesConfig'
+    'images.apps.ImagesConfig',
+    'blog.apps.BlogConfig'
 ]
 
 MIDDLEWARE = [
@@ -130,6 +137,14 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Email server configuration
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGIN_URL = 'login'

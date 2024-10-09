@@ -18,20 +18,30 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.contrib.sitemaps.views import sitemap
+from blog.sitemaps import PostSitemap
+
+sitemaps = {
+    'posts': PostSitemap,
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('account/', include('account.urls')),
-    path(
-    'social-auth/',
-    include('social_django.urls', namespace='social')
-    ),
+    path('social-auth/', include('social_django.urls', namespace='social')),
     path('images/', include('images.urls', namespace='images')),
+    path('blog/', include('blog.urls', namespace='blog')),
+    path(
+        'sitemap.xml',
+        sitemap,
+        {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'
+    ),
     path('__debug__/', include('debug_toolbar.urls')),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(
-    settings.MEDIA_URL,
-    document_root=settings.MEDIA_ROOT
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
     )
