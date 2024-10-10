@@ -13,16 +13,24 @@
     </div>
 
     <div id="sidebar">
-        <!-- recipe Section -->
+        <!-- Recipe Section -->
         <h2>My recipe</h2>
-        <p>This is my recipe. I've written {% total_posts %} posts so far.</p>
+        <p>This is my recipe. I've written {{ total_posts }} posts so far.</p>
+
+        <!-- Create Recipe Button -->
+        <p>
+            <a href="{% url 'recipe:create_recipe' %}" class="btn btn-primary">Create New Recipe</a>
+        </p>
+
         <p>
             <a href="{% url 'recipe:post_feed' %}">
                 Subscribe to my RSS feed
             </a>
         </p>
+
         <h3>Latest posts</h3>
         {% show_latest_posts 3 %}
+        
         <h3>Most commented posts</h3>
         {% get_most_commented_posts as most_commented_posts %}
         <ul>

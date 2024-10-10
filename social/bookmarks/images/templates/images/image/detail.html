@@ -96,3 +96,12 @@
 </script>
 {% endblock %}
 
+<h2>{{ image.title }}</h2>
+<img src="{{ image.image.url }}" alt="{{ image.title }}">
+
+{% if image.recipe %}
+    <h3>Associated Recipe: <a href="{% url 'recipe:post_detail' image.recipe.publish.year image.recipe.publish.month image.recipe.publish.day image.recipe.slug %}">{{ image.recipe.title }}</a></h3>
+    <p>Category: {{ image.recipe.get_category_display }}</p>
+    <p>Ingredients: {{ image.recipe.ingredients }}</p>
+    <p>Instructions: {{ image.recipe.instructions }}</p>
+{% endif %}

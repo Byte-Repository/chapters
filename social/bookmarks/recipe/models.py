@@ -4,6 +4,8 @@ from django.urls import reverse
 from django.utils import timezone
 from taggit.managers import TaggableManager
 
+from images.models import Image
+
 # Managers
 class PublishedManager(models.Manager):
     def get_queryset(self):
@@ -48,6 +50,9 @@ class Post(models.Model):
         choices=Category.choices,
         default=Category.MAIN_COURSE
     )
+    ingredients = models.TextField(default='No ingredients specified')  # New field for ingredients
+    instructions = models.TextField(default='No instructions specified')
+    image = models.ForeignKey(Image, related_name='recipes', on_delete=models.SET_NULL, null=True, blank=True)
     objects = models.Manager()  # The default manager.
     published = PublishedManager()  # Our custom manager.
     tags = TaggableManager(related_name='recipe_posts')

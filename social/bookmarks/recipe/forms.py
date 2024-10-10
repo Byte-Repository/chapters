@@ -1,5 +1,5 @@
 from django import forms
-from .models import Post, Comment, Rating
+from .models import Post, Comment, Rating, Image
 
 class EmailPostForm(forms.Form):
     name = forms.CharField(max_length=25)
@@ -24,6 +24,12 @@ class RatingForm(forms.ModelForm):
         fields = ['score']
 
 class RecipeForm(forms.ModelForm):
+    image = forms.ModelChoiceField(
+        queryset=Image.objects.filter(recipe__isnull=True),  # Only show images not yet tied to any recipe
+        required=False,
+        label="Select an Image"
+    )
+
     class Meta:
         model = Post
-        fields = ['title', 'slug', 'body', 'category']
+        fields = ['title', 'category', 'ingredients', 'instructions', 'image']

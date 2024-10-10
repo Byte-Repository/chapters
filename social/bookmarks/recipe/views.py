@@ -202,3 +202,28 @@ def rate_post(request, post_id):
         form = RatingForm()
 
     return render(request, 'recipe/post/rate_post.html', {'form': form, 'post': post})
+
+from .forms import RecipeForm
+from .models import Post
+
+def create_recipe(request):
+    if request.method == 'POST':
+        form = RecipeForm(request.POST)
+        if form.is_valid():
+            recipe = form.save(commit=False)
+            recipe.save()
+            return redirect('recipe:post_detail', year=recipe.publish.year, month=recipe.publish.month, day=recipe.publish.day, post=recipe.slug)
+    else:
+        form = RecipeForm()
+    return render(request, 'recipe/post/create.html', {'form': form})
+
+def edit_recipe(request, year, month, day, post):
+    recipe = get_object_or_404(Post, slug=post, publish__year=year, publish__month=month, publish__day=day)
+    if request.method == 'POST':
+        form = RecipeForm(request.POST, instance=recipe)
+        if form.is_valid():
+            form.save()
+            return redirect('recipe:post_detail', year=recipe.publish.year, month=recipe.publish.month, day=recipe.publish.day, post=recipe.slug)
+    else:
+        form = RecipeForm(instance=recipe)
+    return render(request, 'recipe/post/edit.html', {'form': form, 'recipe': recipe})

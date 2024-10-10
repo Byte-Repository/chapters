@@ -112,3 +112,22 @@ def image_ranking(request):
         'images/image/ranking.html',
         {'section': 'images', 'most_viewed': most_viewed},
     )
+
+from recipe.models import Post 
+from .forms import ImageCreateForm
+
+def create_image(request):
+    if request.method == 'POST':
+        form = ImageCreateForm(request.POST, request.FILES)
+        if form.is_valid():
+            new_image = form.save(commit=False)
+            # Associate the image with a post (if applicable)
+            post_id = request.POST.get('post_id')
+            if post_id:
+                new_image.post = Post.objects.get(id=post_id)
+            new_image.save()
+            return redirect(new_image.get_absolute_url())
+    else:
+        form = ImageCreateForm()
+
+    return render(request, 'images/create.html', {'form': form})

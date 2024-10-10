@@ -95,4 +95,91 @@ input[type=submit] {
     font-size:12px;
     color:#666;
 }
+.form-row {
+    display: flex;
+    align-items: center; /* Vertically center align items */
+    margin-bottom: 15px; /* Space between form rows */
+}
 
+.form-row label {
+    margin-right: 10px; /* Space between label and field */
+}
+
+.form-row select,
+.form-row input[type="text"], /* Add other input types as needed */
+.form-row textarea { /* Include other form fields you may have */
+    flex: 1; /* Take the remaining space */
+}
+
+/* create.html & edit.html */
+.recipe-form {
+    max-width: 600px; /* Set max width for the form */
+    margin: 0 auto; /* Center the form */
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9; /* Light background */
+}
+
+.form-group {
+    margin-bottom: 15px; /* Space between fields */
+}
+
+.form-group label {
+    display: block; /* Make label block-level for better alignment */
+    margin-bottom: 5px; /* Space between label and input */
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%; /* Full width for inputs */
+    padding: 10px; /* Padding for inputs */
+    border: 1px solid #ccc; /* Border for inputs */
+    border-radius: 4px; /* Rounded corners */
+    box-sizing: border-box; /* Include padding and border in width */
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between; /* Space between buttons */
+}
+
+.btn {
+    padding: 10px 15px; /* Padding for buttons */
+    background-color: #007bff; /* Button color */
+    color: white; /* Text color */
+    border: none;
+    border-radius: 4px; /* Rounded corners */
+    cursor: pointer; /* Pointer on hover */
+}
+
+.btn-secondary {
+    background-color: #6c757d; /* Secondary button color */
+}
+
+/* rate_post.html */
+.review-form {
+    margin-bottom: 20px; /* Space below the review form */
+}
+
+.rating-input {
+    display: inline-block; /* Align rating input inline */
+    margin-right: 10px; /* Space between input and button */
+}
+
+.btn {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white; /* Button text color */
+    border: none; /* Remove border */
+    padding: 5px 10px; /* Padding for button */
+    cursor: pointer; /* Pointer on hover */
+}
+
+.btn:hover {
+    background-color: #0056b3; /* Darken button on hover */
+}
+.btn:disabled {
+    background-color: #6c757d; /* Gray color for disabled state */
+    cursor: not-allowed; /* Change cursor to indicate it's disabled */
+}

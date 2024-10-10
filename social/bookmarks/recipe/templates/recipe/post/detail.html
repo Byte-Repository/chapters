@@ -1,37 +1,95 @@
 {% extends "recipe/base.html" %}
 {% load recipe_tags %}
 
-{% block title %}{{ post.title }}{% endblock %}
+{% block title %}{{ post.title }} | Byte's Recipes{% endblock %}
 
 {% block content %}
-    <h1>{{ post.title }}</h1>
-    <p class="date">Published {{ post.publish }} by {{ post.author }}</p>
-    {{ post.body|markdown }}
-    <p>
-        <a href="{% url "recipe:post_share" post.id %}">Share this post</a>
-    </p>
+<div class="recipe-container">
 
-    {% include "recipe/post/rate_post.html" %}  <!-- Include the rating form -->
-
-    <h2>Similar posts</h2>
-    {% for similar_post in similar_posts %}
-        <p>
-            <a href="{{ similar_post.get_absolute_url }}">{{ similar_post.title }}</a>
-        </p>
-    {% empty %}
-        There are no similar posts yet.
-    {% endfor %}
-
-    {% with comments.count as total_comments %}
-        <h2>{{ total_comments }} comment{{ total_comments|pluralize }}</h2>
-    {% endwith %}
-    {% for comment in comments %}
-        <div class="comment">
-            <p class="info">Comment {{ forloop.counter }} by {{ comment.name }} {{ comment.created }}</p>
-            {{ comment.body|linebreaks }}
+    <!-- Recipe Header Section -->
+    <div class="recipe-header">
+        <h1 class="recipe-title">{{ post.title }}</h1>
+        <div class="recipe-meta">
+            <p class="date">Published on {{ post.publish|date:"F j, Y" }} by {{ post.author }}</p>
+            <p class="category">
+                Category: {{ post.get_category_display }}
+            </p>
+            <a href="{% url 'recipe:post_share' post.id %}" class="share-button">Share this Recipe</a>
         </div>
-    {% empty %}
-        <p>There are no comments.</p>
-    {% endfor %}
-    {% include "recipe/post/includes/comment_form.html" %}
+        <!-- Edit button for the author -->
+        <div class="edit-section">
+            <a href="{% url 'recipe:edit_recipe' post.publish.year post.publish.month post.publish.day post.slug %}" class="edit-button">Edit Recipe</a>
+        </div>
+    </div>
+
+    <!-- Recipe Image Section -->
+    <div class="recipe-image-section">
+        {% if post.image %}
+            <img src="{{ post.image.image.url }}" alt="{{ post.title }}" class="recipe-image">
+        {% else %}
+            <p>No image bookmarked for this recipe yet.</p>
+        {% endif %}
+    </div>
+
+    <!-- Recipe Details Section -->
+    <div class="recipe-details">
+        <!-- Description / Body of Recipe -->
+        <div class="recipe-description">
+            {{ post.body|markdown }}
+        </div>
+
+        <!-- Ingredients -->
+        <div class="ingredients-section">
+            <h2>Ingredients</h2>
+            <p>{{ post.ingredients }}</p>
+        </div>
+
+        <!-- Instructions -->
+        <div class="instructions-section">
+            <h2>Instructions</h2>
+            <p>{{ post.instructions }}</p>
+        </div>
+
+        <!-- Rating Section -->
+        <div class="rating-section">
+            {% include "recipe/post/rate_post.html" %}
+        </div>
+    </div>
+
+    <!-- Similar Posts Section -->
+    <div class="similar-posts-section">
+        <h2>Similar Recipes</h2>
+        {% for similar_post in similar_posts %}
+            <div class="similar-post">
+                <p><a href="{{ similar_post.get_absolute_url }}">{{ similar_post.title }}</a></p>
+            </div>
+        {% empty %}
+            <p>There are no similar posts yet.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-section">
+        {% with comments.count as total_comments %}
+            <h2>{{ total_comments }} Comment{{ total_comments|pluralize }}</h2>
+        {% endwith %}
+        {% for comment in comments %}
+            <div class="comment">
+                <p class="comment-meta">
+                    Comment {{ forloop.counter }} by {{ comment.name }} on {{ comment.created|date:"F j, Y, g:i a" }}
+                </p>
+                <div class="comment-body">
+                    {{ comment.body|linebreaks }}
+                </div>
+            </div>
+        {% empty %}
+            <p>There are no comments yet.</p>
+        {% endfor %}
+        <!-- Comment Form -->
+        <div class="comment-form">
+            {% include "recipe/post/includes/comment_form.html" %}
+        </div>
+    </div>
+
+</div>
 {% endblock %}
