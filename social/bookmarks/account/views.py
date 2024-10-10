@@ -163,9 +163,3 @@ def user_follow(request):
         except User.DoesNotExist:
             return JsonResponse({'status': 'error'})
     return JsonResponse({'status': 'error'})
-
-from blog.models import Post
-
-def blog_list(request):
-    posts = Post.objects.all()  # Get all blog posts
-    return render(request, 'base.html', {'posts': posts, 'section': 'blog'})

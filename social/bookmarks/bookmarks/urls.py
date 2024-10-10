@@ -31,6 +31,7 @@ urlpatterns = [
     path('social-auth/', include('social_django.urls', namespace='social')),
     path('images/', include('images.urls', namespace='images')),
     path('blog/', include('blog.urls', namespace='blog')),
+    path('recipe/', include('recipe.urls', namespace='recipe')),  # Add this line
     path(
         'sitemap.xml',
         sitemap,

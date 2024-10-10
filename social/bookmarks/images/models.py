@@ -23,6 +23,15 @@ class Image(models.Model):
     )
     total_likes = models.PositiveIntegerField(default=0)
 
+    # New field to associate images with recipes
+    # recipe = models.ForeignKey(
+    #     'recipe.Post', 
+    #     null=True,
+    #     blank=True,
+    #     related_name='images',
+    #     on_delete=models.CASCADE,
+    # )
+
     class Meta:
         indexes = [
             models.Index(fields=['-created']),

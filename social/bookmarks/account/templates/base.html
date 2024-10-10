@@ -19,8 +19,8 @@
         <li {% if section == "people" %}class="selected"{% endif %}>
           <a href="{% url "user_list" %}">People</a>
         </li>
-        <li {% if section == "blog" %}class="selected"{% endif %}>
-          <a href="{% url "blog_list" %}">Blogs</a>
+        <!-- <li {% if section == "blogs" %}class="selected"{% endif %}>
+          <a href="{% url "blog:post_list" %}">Blog</a> -->
         </li>
       </ul>
     {% endif %}

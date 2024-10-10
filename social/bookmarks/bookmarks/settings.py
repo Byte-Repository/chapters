@@ -29,7 +29,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['mysite.com', 'localhost', '127.0.0.1']
 
-SITE_ID = 1
+# SITE_ID = 1
 
 # Application definition
 
@@ -51,7 +51,8 @@ INSTALLED_APPS = [
     'taggit',
     'actions.apps.ActionsConfig',
     'images.apps.ImagesConfig',
-    'blog.apps.BlogConfig'
+    'blog.apps.BlogConfig',
+    'recipe.apps.RecipeConfig'
 ]
 
 MIDDLEWARE = [
@@ -190,7 +191,7 @@ REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 0
 
-# if DEBUG:
-#     import mimetypes
-#     mimetypes.add_type('application/javascript', '.js', True)
-#     mimetypes.add_type('text/css', '.css', True)
+if DEBUG:
+    import mimetypes
+    mimetypes.add_type('application/javascript', '.js', True)
+    mimetypes.add_type('text/css', '.css', True)
