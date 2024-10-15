@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/media/jr/oasis/West Texas A&M University/Graduate/2024/Fall/E-Comm & Web Dev - CIDM 6325/Assignments/Assignment 0/chapters/shop/.venv/myshop/bin/python" "$0" "$@"
+'''exec' "/media/jr/oasis/West Texas A&M University/Graduate/2024/Fall/E-Comm & Web Dev - CIDM 6325/Assignments/Assignment 0/chapters/shop/.venv/myshop/bin/python3" "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re

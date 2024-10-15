@@ -1,4 +1,6 @@
 import weasyprint
+from weasyprint import CSS
+from weasyprint import HTML
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.staticfiles import finders
 from django.http import HttpResponse
