@@ -1,6 +1,4 @@
 import weasyprint
-from weasyprint import CSS
-from weasyprint import HTML
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.staticfiles import finders
 from django.http import HttpResponse
@@ -18,7 +16,11 @@ def order_create(request):
     if request.method == 'POST':
         form = OrderCreateForm(request.POST)
         if form.is_valid():
-            order = form.save()
+            order = form.save(commit=False)
+            if cart.coupon:
+                order.coupon = cart.coupon
+                order.discount = cart.coupon.discount
+            order.save()
             for item in cart:
                 OrderItem.objects.create(
                     order=order,

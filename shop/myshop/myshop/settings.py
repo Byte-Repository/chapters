@@ -36,9 +36,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cart.apps.CartConfig',
+    'coupons.apps.CouponsConfig',
     'orders.apps.OrdersConfig',
     'payment.apps.PaymentConfig',
-    'cart.apps.CartConfig',
     'shop.apps.ShopConfig',
 ]
 
@@ -139,4 +140,9 @@ STRIPE_API_VERSION = '2024-04-10'
 STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET')
 
 STATIC_ROOT = BASE_DIR / 'static'
+
+# Redis settings
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 1
 
