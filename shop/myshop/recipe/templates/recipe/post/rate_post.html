@@ -1,0 +1,20 @@
+<form method="post" action="{% url 'recipe:rate_post' post.id %}" class="review-form">
+    {% csrf_token %}
+    <div class="rating-input">
+        {{ form.score }}
+    </div>
+    <button type="submit" class="btn" id="reviewButton">Add Review</button>
+</form>
+
+<h3>Average Rating:</h3>
+<p>{{ average_rating|default:"No ratings yet" }}</p>
+
+<script>
+    // Change button text to "Reviewed" after submission
+    const form = document.querySelector('.review-form');
+    form.addEventListener('submit', function() {
+        const button = document.getElementById('reviewButton');
+        button.textContent = 'Reviewed';
+        button.disabled = true; // Optionally disable the button
+    });
+</script>

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}{{ image.title }}{% endblock %}
+
+{% block content %}
+  <h1>{{ image.title }}</h1>
+  {% load thumbnail %}
+  <a href="{{ image.image.url }}">
+    <img src="{% thumbnail image.image 300x0 %}" class="image-detail" alt="{{ image.title }}">
+  </a>
+  {% with total_likes=image.users_like.count users_like=image.users_like.all %}
+    <div class="image-info">
+      <div>
+        <span class="count">
+          <span class="total">{{ total_likes }}</span>
+          like{{ total_likes|pluralize }}
+        </span>
+        <span class="count">
+          {{ total_views }} view{{ total_views|pluralize }}
+        </span>
+        <a href="#" data-id="{{ image.id }}" 
+           data-action="{% if request.user in users_like %}unlike{% else %}like{% endif %}"
+           class="like button">
+          {% if request.user not in users_like %}
+            Like
+          {% else %}
+            Unlike
+          {% endif %}
+        </a>
+      </div>
+      {{ image.description|linebreaks }}
+    </div>
+    <div class="image-likes">
+      {% for user in users_like %}
+        <div>
+          {% if user.profile.photo %}
+            <img src="{{ user.profile.photo.url }}" alt="{{ user.first_name }}">
+          {% endif %}
+          <p>{{ user.first_name }}</p>
+        </div>
+      {% empty %}
+        <p>Nobody likes this image yet.</p>
+      {% endfor %}
+    </div>
+  {% endwith %}
+{% endblock %}
+
+{% block domready %}
+<script>
+  const csrftoken = '{{ csrf_token }}'; // Ensure this is set
+  const url = '{% url "images:like" %}';
+  var options = {
+    method: 'POST',
+    headers: {'X-CSRFToken': csrftoken},
+    mode: 'same-origin'
+  };
+
+  document.querySelector('a.like').addEventListener('click', function(e) {
+    e.preventDefault();
+    var likeButton = this;
+
+    // Prepare request body
+    var formData = new FormData();
+    formData.append('id', likeButton.dataset.id);
+    formData.append('action', likeButton.dataset.action);
+    options['body'] = formData;
+
+    // Send HTTP request
+    fetch(url, options)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log(data); // Log response data
+        if (data['status'] === 'ok') {
+          var previousAction = likeButton.dataset.action;
+
+          // Toggle button text and data-action
+          var action = previousAction === 'like' ? 'unlike' : 'like';
+          likeButton.dataset.action = action;
+          likeButton.innerHTML = action.charAt(0).toUpperCase() + action.slice(1);
+
+          // Update like count
+          var likeCount = document.querySelector('span.count .total');
+          var totalLikes = parseInt(likeCount.innerHTML);
+          likeCount.innerHTML = previousAction === 'like' ? totalLikes + 1 : totalLikes - 1;
+        }
+      })
+      .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+      });
+  });
+</script>
+{% endblock %}
+
+<h2>{{ image.title }}</h2>
+<img src="{{ image.image.url }}" alt="{{ image.title }}">
+
+{% if image.recipe %}
+    <h3>Associated Recipe: <a href="{% url 'recipe:post_detail' image.recipe.publish.year image.recipe.publish.month image.recipe.publish.day image.recipe.slug %}">{{ image.recipe.title }}</a></h3>
+    <p>Category: {{ image.recipe.get_category_display }}</p>
+    <p>Ingredients: {{ image.recipe.ingredients }}</p>
+    <p>Instructions: {{ image.recipe.instructions }}</p>
+{% endif %}
