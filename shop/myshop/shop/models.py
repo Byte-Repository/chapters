@@ -1,7 +1,9 @@
 from django.db import models
 from django.urls import reverse
-from parler.models import TranslatableModel, TranslatedFields # type: ignore
-
+from parler.models import TranslatableModel, TranslatedFields  # type: ignore
+from django.contrib.auth.models import User
+from recipe.models import Post 
+from django.utils import timezone
 
 class Category(TranslatableModel):
     translations = TranslatedFields(
@@ -46,6 +48,12 @@ class Product(TranslatableModel):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
+    # New fields
+    is_subscription = models.BooleanField(default=False)
+    subscription_duration = models.PositiveIntegerField(null=True, blank=True, help_text="Duration in days for subscriptions")
+    is_recipe_book = models.BooleanField(default=False)
+    related_recipes = models.ManyToManyField(Post, related_name='products', blank=True)
+
     class Meta:
         # ordering = ['name']
         indexes = [
@@ -59,3 +67,20 @@ class Product(TranslatableModel):
 
     def get_absolute_url(self):
         return reverse('shop:product_detail', args=[self.id, self.slug])
+class Subscription(models.Model):
+    TIER_CHOICES = [
+        ('basic', 'Basic'),
+        ('premium', 'Premium'),
+        ('vip', 'VIP'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    start_date = models.DateTimeField(default=timezone.now)
+    end_date = models.DateTimeField()
+    tier = models.CharField(max_length=50, choices=TIER_CHOICES)
+
+    def is_active(self):
+        return self.end_date > timezone.now()
+
+    def __str__(self):
+        return f"{self.user.username} - {self.get_tier_display()} subscription"

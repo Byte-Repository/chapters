@@ -18,6 +18,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
+from django.contrib.sitemaps.views import sitemap
+from blog.sitemaps import PostSitemap
 
 from django.conf.urls.i18n import i18n_patterns
 from django.utils.translation import gettext_lazy as _
@@ -32,6 +34,24 @@ urlpatterns = i18n_patterns(
     path('rosetta/', include('rosetta.urls')),
     path('', include('shop.urls', namespace='shop')),
 )
+
+sitemaps = {
+    'posts': PostSitemap,
+}
+
+urlpatterns += [
+    path('images/', include('images.urls', namespace='images')),      # Include images app
+    path('blog/', include('blog.urls', namespace='blog')),  # Include Blog URLs
+    path('recipe/', include('recipe.urls', namespace='recipe')),
+    path('account/', include('account.urls')),
+    path(
+        'sitemap.xml',
+        sitemap,
+        {'sitemaps': sitemaps},
+        name='django.contrib.sitemaps.views.sitemap'
+    ),
+    path('__debug__/', include('debug_toolbar.urls')),  
+]
 
 urlpatterns += [
     path(

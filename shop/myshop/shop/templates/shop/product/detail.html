@@ -37,5 +37,18 @@
       </div>
     {% endif %}
 
+    {% if related_recipes %}
+      <div class="related-recipes">
+        <h3>{% translate "Related Recipes" %}</h3>
+        <ul>
+          {% for recipe in related_recipes %}
+            <li>
+              <a href="{{ recipe.get_absolute_url }}">{{ recipe.title }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
+    
   </div>
 {% endblock %}

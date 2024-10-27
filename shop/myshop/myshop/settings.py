@@ -27,6 +27,9 @@ SECRET_KEY = 'django-insecure-l5(x*vl4226(jm#_0ahid#b_qifo2i)qrs!o=edp9&@fwn+1l#
 DEBUG = True
 ALLOWED_HOSTS = ['mysite.com', 'localhost', '127.0.0.1'] #May need to comment out...
 
+SITE_ID = 1
+
+
 # Application definition
 INSTALLED_APPS = [
     # Django apps
@@ -143,9 +146,9 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')
 
 # Authentication
-LOGIN_REDIRECT_URL = 'dashboard'
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
+LOGIN_REDIRECT_URL = 'account:dashboard'  # Specify the namespaced path
+LOGIN_URL = 'account:login'  # Specify the namespaced login URL
+LOGOUT_URL = 'account:logout'  # Specify the namespaced logout URL
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
