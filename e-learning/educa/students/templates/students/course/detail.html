@@ -32,14 +32,18 @@
           Course chat room
         </a>
       </div>
-      <br><br>
-      <div>
-        <a href="{% url 'portfolio_upload' course.id %}">
-          Upload Portfolio
-        </a>
-      </div>
-    </h3>
-    
+      
+        <div>
+          <a href="{% url 'portfolio_upload' course.id %}">
+            Submit Work
+          </a>
+        </div>
+        <div>
+          <a href="{% url 'portfolio_list' course.id %}">
+            View Uploads
+          </a>
+        </div>
+    </h3>    
   </div>
   <div class="module">
     {% cache 600 module_contents module %}

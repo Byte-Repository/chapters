@@ -4,7 +4,7 @@ from .models import Portfolio
 class PortfolioForm(forms.ModelForm):
     class Meta:
         model = Portfolio
-        fields = ['title', 'content_type', 'content', 'link']
+        fields = ['title', 'content_type', 'content']
     
     def clean_content(self):
         content_type = self.cleaned_data.get('content_type')

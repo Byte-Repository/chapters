@@ -16,7 +16,7 @@ class Portfolio(models.Model):
     date = models.DateField(auto_now_add=True)
     content_type = models.CharField(max_length=10, choices=CONTENT_TYPE_CHOICES)
     content = models.FileField(upload_to='portfolio/')
-    link = models.URLField(blank=True, null=True)
+    # link = models.URLField(blank=True, null=True)
     
     # Relationships
     course = models.ForeignKey(Course, on_delete=models.CASCADE)  # Fixed the reference here

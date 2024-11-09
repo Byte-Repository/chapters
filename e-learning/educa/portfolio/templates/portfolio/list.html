@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h2>Portfolio for {{ course.name }}</h2>
+  <h2>Uploads for {{ course.title }}</h2>
   <ul>
     {% for portfolio in portfolios %}
       <li><a href="{% url 'portfolio_detail' portfolio.pk %}">{{ portfolio.title }}</a> - {{ portfolio.date }}</li>
