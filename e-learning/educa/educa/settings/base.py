@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'redisboard',
     'rest_framework',
     'chat.apps.ChatConfig',
+    'portfolio.apps.PortfolioConfig',
     'students.apps.StudentsConfig',
 ]
 

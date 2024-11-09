@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h2>{{ portfolio.title }}</h2>
+  <p>Uploaded on: {{ portfolio.date }}</p>
+  {% if portfolio.content %}
+    <p><a href="{{ portfolio.content.url }}">View Content</a></p>
+  {% elif portfolio.link %}
+    <p><a href="{{ portfolio.link }}">External Link</a></p>
+  {% endif %}
+{% endblock %}
