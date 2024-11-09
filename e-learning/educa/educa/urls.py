@@ -38,6 +38,8 @@ urlpatterns = [
     path('students/', include('students.urls')),
     path('api/', include('courses.api.urls', namespace='api')),
     path('chat/', include('chat.urls', namespace='chat')),
+    path('portfolio/', include('portfolio.urls')),
+    path('api/', include('portfolio.api.urls', namespace='p_api')),
     path('__debug__/', include('debug_toolbar.urls')),
 ]
 

@@ -27,10 +27,19 @@
       {% endfor %}
     </ul>
     <h3>
-      <a href="{% url "chat:course_chat_room" object.id %}">
-        Course chat room
-      </a>
+      <div>
+        <a href="{% url 'chat:course_chat_room' object.id %}">
+          Course chat room
+        </a>
+      </div>
+      <br><br>
+      <div>
+        <a href="{% url 'portfolio_upload' course.id %}">
+          Upload Portfolio
+        </a>
+      </div>
     </h3>
+    
   </div>
   <div class="module">
     {% cache 600 module_contents module %}
