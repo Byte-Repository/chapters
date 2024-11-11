@@ -5,15 +5,17 @@
 {% endblock %}
 
 {% block content %}
-  <h1>
-    Sign up
-  </h1>
-  <div class="module">
-    <p>Enter your details to create an account:</p>
-    <form method="post">
-      {{ form.as_p }}
-      {% csrf_token %}
-      <p><input type="submit" value="Create my account"></p>
-    </form>
+  <div class="container my-4">
+    <h1 class="mb-4">Sign up</h1>
+    <div class="module">
+      <p>Enter your details to create an account:</p>
+      <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+          {{ form.as_p }}
+        </div>
+        <button type="submit" class="btn btn-primary">Create my account</button>
+      </form>
+    </div>
   </div>
 {% endblock %}

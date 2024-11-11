@@ -1,20 +1,25 @@
 {% extends "base.html" %}
 {% block title %}Log-in{% endblock %}
 {% block content %}
-<h1>Log-in</h1>
-<div class="module">
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% else %}
-<p>Please, use the following form to log-in:</p>
-{% endif %}
-<div class="login-form">
-<form action="{% url 'login' %}" method="post">
-{{ form.as_p }}
-{% csrf_token %}
-<input type="hidden" name="next" value="{{ next }}" />
-<p><input type="submit" value="Log-in"></p>
-</form>
-</div>
+<div class="container mt-5">
+    <h1 class="text-center mb-4">Log-in</h1>
+    <div class="card shadow-sm p-4">
+        {% if form.errors %}
+        <div class="alert alert-danger" role="alert">
+            Your username and password didn't match. Please try again.
+        </div>
+        {% else %}
+        <p class="text-muted">Please, use the following form to log in:</p>
+        {% endif %}
+        
+        <form action="{% url 'login' %}" method="post" class="mt-3">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-block">Log in</button>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}

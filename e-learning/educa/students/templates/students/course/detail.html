@@ -6,53 +6,46 @@
 {% endblock %}
 
 {% block content %}
-  <h1>
-    {{ module.title }}
-  </h1>
-  <div class="contents">
-    <h3>Modules</h3>
-    <ul id="modules">
-      {% for m in object.modules.all %}
-        <li data-id="{{ m.id }}" {% if m == module %}class="selected"{% endif %}>
-          <a href="{% url "student_course_detail_module" object.id m.id %}">
-            <span>
-              Module <span class="order">{{ m.order|add:1 }}</span>
-            </span>
-            <br>
-            {{ m.title }}
-          </a>
-        </li>
-      {% empty %}
-        <li>No modules yet.</li>
-      {% endfor %}
-    </ul>
-    <h3>
+  <div class="container my-4">
+    <h1 class="mb-4">{{ module.title }}</h1>
+    <div class="contents">
+      <h3>Modules</h3>
+      <ul id="modules" class="list-group">
+        {% for m in object.modules.all %}
+          <li class="list-group-item d-flex justify-content-between align-items-center" data-id="{{ m.id }}" {% if m == module %}class="selected list-group-item-primary"{% endif %}>
+            <a href="{% url 'student_course_detail_module' object.id m.id %}" class="stretched-link">
+              <span>
+                Module <span class="order">{{ m.order|add:1 }}</span>
+              </span>
+              <br>
+              {{ m.title }}
+            </a>
+          </li>
+        {% empty %}
+          <li class="list-group-item">No modules yet.</li>
+        {% endfor %}
+      </ul>
+      <h3 class="mt-4">Actions</h3>
       <div>
-        <a href="{% url 'chat:course_chat_room' object.id %}">
-          Course chat room
-        </a>
+        <a href="{% url 'chat:course_chat_room' object.id %}" class="btn btn-outline-primary">Course chat room</a>
       </div>
-      
-        <div>
-          <a href="{% url 'portfolio_upload' course.id %}">
-            Submit Work
-          </a>
-        </div>
-        <div>
-          <a href="{% url 'portfolio_list' course.id %}">
-            View Uploads
-          </a>
-        </div>
-    </h3>    
-  </div>
-  <div class="module">
-    {% cache 600 module_contents module %}
-      {% for content in module.contents.all %}
-        {% with item=content.item %}
-          <h2>{{ item.title }}</h2>
-          {{ item.render }}
-        {% endwith %}
-      {% endfor %}
-    {% endcache %}
+      <div>
+        <a href="{% url 'portfolio_upload' course.id %}" class="btn btn-outline-success mt-2">Submit Work</a>
+      </div>
+      <div>
+        <a href="{% url 'portfolio_list' course.id %}" class="btn btn-outline-info mt-2">View Uploads</a>
+      </div>
+    </h3>
+    </div>
+    <div class="module mt-4">
+      {% cache 600 module_contents module %}
+        {% for content in module.contents.all %}
+          {% with item=content.item %}
+            <h2>{{ item.title }}</h2>
+            <div>{{ item.render|safe }}</div>
+          {% endwith %}
+        {% endfor %}
+      {% endcache %}
+    </div>
   </div>
 {% endblock %}

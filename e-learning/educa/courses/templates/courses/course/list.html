@@ -9,44 +9,53 @@
 {% endblock %}
 
 {% block content %}
-  <h1>
+<div class="container mt-5">
+  <h1 class="text-center">
     {% if subject %}
       {{ subject.title }} courses
     {% else %}
       All courses
     {% endif %}
   </h1>
-  <div class="contents">
+
+  <div class="contents mt-4">
     <h3>Subjects</h3>
-    <ul id="modules">
-      <li {% if not subject %}class="selected"{% endif %}>
-        <a href="{% url "course_list" %}">All</a>
+    <ul id="modules" class="list-group">
+      <li class="list-group-item {% if not subject %}active{% endif %}">
+        <a href="{% url 'course_list' %}" class="text-decoration-none">All</a>
       </li>
       {% for s in subjects %}
-        <li {% if subject == s %}class="selected"{% endif %}>
-          <a href="{% url "course_list_subject" s.slug %}">
+        <li class="list-group-item {% if subject == s %}active{% endif %}">
+          <a href="{% url 'course_list_subject' s.slug %}" class="text-decoration-none">
             {{ s.title }}
             <br>
-            <span>{{ s.total_courses }} course{{ s.total_courses|pluralize }}</span>
+            <span class="text-muted">{{ s.total_courses }} course{{ s.total_courses|pluralize }}</span>
           </a>
         </li>
       {% endfor %}
     </ul>
   </div>
-  <div class="module">
+
+  <div class="module mt-4">
     {% for course in courses %}
       {% with subject=course.subject %}
-        <h3>
-          <a href="{% url "course_detail" course.slug %}">
-            {{ course.title }}
-          </a>
-        </h3>
-        <p>
-          <a href="{% url "course_list_subject" subject.slug %}">{{ subject }}</a>.
-            {{ course.total_modules }} modules.
-            Instructor: {{ course.owner.get_full_name }}
-        </p>
+        <div class="course-card mb-4 p-3 border rounded">
+          <h3>
+            <a href="{% url 'course_detail' course.slug %}" class="text-decoration-none">
+              {{ course.title }}
+            </a>
+          </h3>
+          <p>
+            <a href="{% url 'course_list_subject' subject.slug %}" class="text-decoration-none">
+              {{ subject }}
+            </a>.
+            <span class="text-muted">{{ course.total_modules }} modules</span>
+            <br>
+            <span>Instructor: {{ course.owner.get_full_name }}</span>
+          </p>
+        </div>
       {% endwith %}
     {% endfor %}
   </div>
+</div>
 {% endblock %}

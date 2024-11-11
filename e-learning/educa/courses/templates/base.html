@@ -5,33 +5,44 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Added for responsiveness -->
     <title>{% block title %}Educa{% endblock %}</title>
+    
+    <!-- Link to Bootstrap CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    
+    <!-- Link to your custom base CSS -->
     <link href="{% static 'css/base.css' %}" rel="stylesheet">
 </head>
 <body>
-    <div id="header">
-        <a href="/" class="logo">Educa</a>
-        <ul class="menu">
+    <!-- Bootstrap Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a href="/" class="navbar-brand">Educa</a>
+        <ul class="navbar-nav ml-auto">
             {% if request.user.is_authenticated %}
-            <li>
-                <form action="{% url 'logout' %}" method="post">
+            <li class="nav-item">
+                <form action="{% url 'logout' %}" method="post" class="form-inline">
                     {% csrf_token %} <!-- CSRF token for security -->
-                    <button type="submit">Sign out</button>
+                    <button type="submit" class="btn btn-outline-secondary">Sign out</button>
                 </form>
             </li>
             {% else %}
-            <li><a href="{% url 'login' %}">Sign in</a></li>
+            <li class="nav-item"><a href="{% url 'login' %}" class="nav-link">Sign in</a></li>
             {% endif %}
         </ul>
-    </div>
-    <div id="content">
+    </nav>
+    
+    <div id="content" class="container mt-4">
         {% block content %}
         {% endblock %}
     </div>
+    
     {% block include_js %}
     {% endblock %}
+
+    <!-- Bootstrap JS and Popper.js bundle -->
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
-            // DOM loaded
             console.log("DOM is fully loaded"); // Example log for debugging
         });
     </script>

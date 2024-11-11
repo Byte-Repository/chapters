@@ -3,21 +3,25 @@
 {% block title %}Chat room for "{{ course.title }}"{% endblock %}
 
 {% block content %}
-  <div id="chat">
+  <div id="chat" class="container my-4">
     {% for message in latest_messages %}
-      <div class="message {% if message.user == request.user %}me{% else %}other{% endif %}">
-        <strong>{{ message.user.username }}</strong>
-        <span class="date">
-          {{ message.sent_on|date:"Y.m.d H:i A" }}
-        </span>
-        <br>
-        {{ message.content }}
+      <div class="message {% if message.user == request.user %}bg-primary text-white{% else %}bg-light{% endif %} p-3 mb-2 rounded">
+        <div class="d-flex justify-content-between">
+          <strong>{{ message.user.username }}</strong>
+          <span class="date text-muted">
+            {{ message.sent_on|date:"Y.m.d H:i A" }}
+          </span>
+        </div>
+        <p>{{ message.content }}</p>
       </div>
     {% endfor %}
   </div>
-  <div id="chat-input">
-    <input id="chat-message-input" type="text">
-    <input id="chat-message-submit" type="submit" value="Send">
+
+  <div id="chat-input" class="container">
+    <div class="input-group">
+      <input id="chat-message-input" type="text" class="form-control" placeholder="Type your message...">
+      <button id="chat-message-submit" class="btn btn-primary">Send</button>
+    </div>
   </div>
 {% endblock %}
 
@@ -45,13 +49,16 @@
     const dateOptions = {hour: 'numeric', minute: 'numeric', hour12: true};
     const datetime = new Date(data.datetime).toLocaleString('en', dateOptions);
     const isMe = data.user === requestUser;
-    const source = isMe ? 'me' : 'other';
+    const source = isMe ? 'bg-primary text-white' : 'bg-light';
     const name = isMe ? 'Me' : data.user;
 
-    chat.innerHTML += '<div class="message ' + source + '">' +
+    chat.innerHTML += '<div class="message ' + source + ' p-3 mb-2 rounded">' +
+                      '<div class="d-flex justify-content-between">' +
                       '<strong>' + name + '</strong> ' +
-                      '<span class="date">' + datetime + '</span><br>' +
-                      data.message + '</div>';
+                      '<span class="date text-muted">' + datetime + '</span>' +
+                      '</div>' +
+                      '<p>' + data.message + '</p>' +
+                      '</div>';
     chat.scrollTop = chat.scrollHeight;
   };
 
